@@ -1,3 +1,55 @@
+Análise COVID-19 Itália via BigQuery
+Projeto: curso-ebac-459914 Fonte de dados: bigquery-public-data.covid19_italy.national_trends
+
+# Importações necessárias
+from google.cloud import bigquery
+import pandas as pd
+import matplotlib.pyplot as plt
+"
+# Define o ID do projeto
+project_id = "curso-ebac-459914"
+​
+# Cria o cliente BigQuery
+client = bigquery.Client(project="curso-ebac-459914")
+ DESC
+# Consulta SQL
+query = """
+SELECT 
+  date,
+  region_name, 
+  total_confirmed_cases,
+  deaths
+FROM 
+  `bigquery-public-data.covid19_italy.data_by_region`
+ORDER BY date DESC
+LIMIT 100
+"""
+​
+# Executa a consulta
+df_covid = client.query(query).to_dataframe()
+​
+# Exibe os primeiros dados
+print(df_covid.head())
+                       date  region_name  total_confirmed_cases  deaths
+0 2025-01-08 17:00:00+00:00      Liguria                 697116    6121
+1 2025-01-08 17:00:00+00:00      Sicilia                1836915   13145
+2 2025-01-08 17:00:00+00:00      Toscana                1669583   12724
+3 2025-01-08 17:00:00+00:00       Puglia                1704918   10138
+4 2025-01-08 17:00:00+00:00  P.A. Trento                 255517    1694
+# Gráfico de evolução
+​
+plt.figure(figsize=(12, 6))
+plt.plot(df_covid["date"], df_covid["total_confirmed_cases"], label="Casos Totais")
+plt.plot(df_covid["date"], df_covid["deaths"], label="Mortes Totais", color='red')
+plt.title("Evolução da COVID-19 na Itália")
+plt.xlabel("Data")
+plt.ylabel("Quantidade")
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
 # Análise de Dados COVID-19 na Itália com BigQuery
 
 Este projeto foi desenvolvido com foco no uso do Google Cloud e BigQuery para análise de dados públicos da pandemia de COVID-19 na Itália.
